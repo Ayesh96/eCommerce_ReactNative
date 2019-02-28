@@ -47,6 +47,8 @@ openWishlist = () =>{
     NavigationService.navigate("Wishlist",{})
 }
 
+
+
 cart = (product) => {
     product.qty = 1
     this.props.add_remove_cart(product)
@@ -61,8 +63,8 @@ render() {
             data={this.state.products}
             renderItem ={({item})=>
             <View>
-             <TouchableOpacity key={item.id}>
-                    <Image source={{uri:item.images[0].src}}/>
+             <TouchableOpacity key={item.id} onPress={()=>{NavigationService.navigate("Details",{product:item})}}>
+                    <Image style={{height:100,width:100}} source={{uri:item.images[0].src}}/>
                     <Text>{item.name}</Text>
                     <Text>{item.price}</Text>
                     <Text>{item.images[0].src}</Text>
@@ -97,6 +99,8 @@ const mapDispatchToProps = (dispatch) => {
         add_remove_wishlist: (product) => dispatch({type:'ADD_REMOVE_WISHLIST',product:product})
     }
 }
+
+
 
 
 export default connect(mapStateToProps,mapDispatchToProps)(HomePage)

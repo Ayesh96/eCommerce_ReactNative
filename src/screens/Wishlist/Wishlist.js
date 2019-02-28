@@ -1,30 +1,21 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {View, Button, Text, TouchableOpacity, FlatList} from 'react-native'
+import {View, Button, Text, TouchableOpacity, FlatList, Image} from 'react-native'
 
-class Cart extends React.Component{
+class Wishlist extends React.Component{
     
-
-    calculateTotal = () =>{
-        total = 0
-        for(let i=0;i<this.props.cart.length;i++){
-            total += this.props.cart[i].price * this.props.cart[i].qty
-        }
-        return total
-    }
-
-
     render(){
         console.log('====================================');
-        console.log(this.props.cart);
+        console.log("Wishlist Render : ",this.props.wishlist);
         console.log('====================================');
         return (
             <View>
                 <FlatList
-                data={this.props.cart}
-                renderItem ={({item})=>
-                    <View>
+                data={this.props.wishlist}
+                renderItem ={({item,index})=>
+                    <View key={index}>
                         <TouchableOpacity key={item.id}>
+                            <Image style={{height:100,width:100}} source={{uri:item.images[0].src}}/>
                             <Text>{item.name}</Text>
                             <Text>{item.price}</Text>
                         </TouchableOpacity>
@@ -33,38 +24,22 @@ class Cart extends React.Component{
                     </View>
                 }>
                 </FlatList>
-
-
             </View>
         )
     }
 }
 
-// componentWillReceiveProps = (nextProps) =>{
-//     if (JSON.stringify(this.props.cart) !== JSON.stringify(nextProps.cart)){
-//       this.setState({
-//         title: nextProps.post.title,
-//         body: nextProps.post.body,
-//         category: nextProps.post.category,
-//       })
-//     }      
-//   }
-
-
-
 
 mapStateToProps = (state) => {
     return {
-        cart:state.cart.cart
+        wishlist:state.wishlist
     }
-
 }
 
 mapDispatchToProps = (dispatch) => {
     return {
-        removeFromCart: (product) => dispatch({type:'ADD_REMOVE_CART',product:product})
+        removeFromCart: (product) => dispatch({type:'ADD_REMOVE_WISHLIST',product:product})
     }
 }
 
-
-export default connect(mapStateToProps,mapDispatchToProps)(Cart)
+export default connect(mapStateToProps,mapDispatchToProps)(Wishlist)

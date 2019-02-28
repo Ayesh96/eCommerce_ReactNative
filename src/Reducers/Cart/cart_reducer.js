@@ -1,44 +1,39 @@
-let initialState = {
-    cart:[]
-}
-
-const _cart = (state=initialState,action)=>{
-    let newState = initialState
+const _cart = (state=[],action)=>{
+    let newState = state
 
     switch(action.type){
         
         case 'ADD_REMOVE_CART':
-        console.log('====================================');
-        console.log("Latest State",state);
-        console.log('====================================');
 
-        if(state.cart != null && state.cart.length > 0){
-            newState.cart = [...state.cart]
+        if(state != null && state.length > 0){
+            newState= [...state];
         }
-       
-            
-        //let state = state.cart
-        if(newState.cart.length > 0){
-            let i = newState.cart.findIndex(p=>p.id === action.product.id)
+ 
+        if(newState.length > 0){
+            let i = newState.findIndex(p=>p.id === action.product.id)
             if(i<0){
-                //newState.cart.push(action.product)
-                newState.cart.splice(newState.cart.length,0,action.product)
+                newState.splice(newState.length,0,action.product)                
             }
             else{
-                newState.cart.filter(product=> product.id != action.product.id)
+                newState = newState.filter(product=> product.id != action.product.id)
+                console.log('====================================');
+                console.log("Removed : ",i,"  ",action.product.id);
+                console.log('====================================');
+                
             }
         }
         else{
-            newState.cart.push(action.product)
-        }
-          
-            
+            newState = []
+            newState.push(action.product)        
+        } 
             return newState
         
         default:
             return newState
 
     }
+
+
    
 }
 

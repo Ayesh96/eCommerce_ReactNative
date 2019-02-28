@@ -1,27 +1,39 @@
-let initialState = {
-    wishlist:[]
-}
+const _wishlist = (state=[],action)=>{
+    let newState = state
 
-const _wishlist = (state=initialState,action)=>{
-    
     switch(action.type){
+        
         case 'ADD_REMOVE_WISHLIST':
-        console.log('====================================');
-        console.log("WISHLIST : s",state);
-        console.log('====================================');
-            let i = state.wishlist.findIndex(p=>p.id === action.product.id)
+
+        if(state != null && state.length > 0){
+            newState= [...state];
+        }
+ 
+        if(newState.length > 0){
+            let i = newState.findIndex(p=>p.id === action.product.id)
             if(i<0){
-                state.wishlist.push(action.product)
+                newState.splice(newState.length,0,action.product)                
             }
             else{
-                state.wishlist.splice(i,1)
+                newState = newState.filter(product=> product.id != action.product.id)
+                console.log('====================================');
+                console.log("Removed : ",i,"  ",action.product.id);
+                console.log('====================================');
+                
             }
-            
-            return state
-
+        }
+        else{
+            newState = []
+            newState.push(action.product)        
+        } 
+            return newState
+        
         default:
-            return state
+            return newState
+
     }
+
+
    
 }
 
