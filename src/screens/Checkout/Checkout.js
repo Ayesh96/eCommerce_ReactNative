@@ -1,7 +1,8 @@
 import React,{Component} from 'react'
-import {ScrollView,Text,TouchableOpacity,Button,TextInput} from 'react-native'
+import {ScrollView,Text,TouchableOpacity,Button,TextInput,Alert} from 'react-native'
 import Api from '../../../Api'
 import {connect} from 'react-redux'
+import NavigationService from '../../../NavigationService'
 
 class Checkout extends Component {
 
@@ -99,6 +100,10 @@ class Checkout extends Component {
     }
 
     componentWillMount = () => {
+
+        console.log('====================================');
+        console.log("Cart Items : ",this.props.cart);
+        console.log('====================================');
         Api.get("customers/"+this.props.user.id,{},
         data=>{
             this.setUserDetails(data)
@@ -107,7 +112,8 @@ class Checkout extends Component {
         })
     }
 
-    updateDetails = () => {
+    setBillingDetails(){
+
         let billing = {
             first_name:this.state.billing_firstname,
             last_name:this.state.billing_lastname,
@@ -120,6 +126,11 @@ class Checkout extends Component {
             email:this.state.billing_email
         }
 
+        return billing
+    }
+
+    setShippingDetails(){
+
         let shipping = {
             first_name:this.state.shipping_firstname,
             last_name:this.state.shipping_lastname,
@@ -130,9 +141,13 @@ class Checkout extends Component {
             postcode:this.state.shipping_postcode,
         }
 
+        return shipping
+    }
+    updateDetails = () => {
+        
         let user = {
-            billing:billing,
-            shipping:shipping
+            billing:this.setBillingDetails,
+            shipping:this.setShippingDetails
         }
         
         if(this.fieldsValidated()){
@@ -151,11 +166,34 @@ class Checkout extends Component {
     confirmOrder = () => {
         this.updateDetails()
 
+        let order = {
+            billing:this.setBillingDetails,
+            shipping:this.setShippingDetails,
+            line_items:[],
+            customer_id:this.props.user.id
+            
+        }
+
+        let item = {
+            product_id:0,
+            quantity:0
+
+        }
+
+        for(let i=0;i<this.props.cart.length;i++){
+            item.product_id = this.props.cart[i].id
+            item.quantity = this.props.cart[i].qty
+            order.line_items.push(item)
+        }
+
         Api.post("orders",order,
         data=>{
-
+            Alert.alert("Order Created Successfuly, Your Order ID is "+data.id)
+            NavigationService.navigate("Profile",{})
         },error=>{
-            
+            console.log('====================================');
+            console.log("Error : ",error);
+            console.log('====================================');
         })
     }
     render(){
@@ -235,7 +273,7 @@ class Checkout extends Component {
                     </TextInput>
 
 
-                <Button title="Confirm Order" onPress={this.updateDetails}></Button>
+                <Button title="Confirm Order" onPress={this.confirmOrder}></Button>
             </ScrollView>
         )
     }
