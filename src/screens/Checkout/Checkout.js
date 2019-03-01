@@ -1,15 +1,224 @@
 import React,{Component} from 'react'
-import {View,Text,TouchableOpacity,Button,TextInput} from 'react-native'
-
+import {ScrollView,Text,TouchableOpacity,Button,TextInput} from 'react-native'
+import Api from '../../../Api'
+import {connect} from 'react-redux'
 
 class Checkout extends Component {
+
+    state = {  
+            billing_firstname:"",
+            billing_lastname:"",
+            billing_address1:"",
+            billing_city:"",
+            billing_country:"",
+            billing_state:"",
+            billing_postcode:"",
+            billing_email:"",
+            billing_phone:"",
+
+            shipping_firstname:"",
+            shipping_lastname:"",
+            shipping_address1:"",
+            shipping_city:"",
+            shipping_country:"",
+            shipping_state:"",
+            shipping_postcode:""
+    }
+
+    validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+      }
+
+
+    fieldsValidated(){
+        if (this.state.billing_firstname == null  || 
+            this.state.billing_lastname  == null  || 
+            this.state.billing_address1  == null  || 
+            this.state.billing_city      == null  || 
+            this.state.billing_country   == null  || 
+            this.state.billing_state     == null  || 
+            this.state.billing_postcode  == null  || 
+            this.state.billing_email     == null  || 
+            this.state.billing_phone     == null  ||
+            this.state.billing_firstname == ""    || 
+            this.state.billing_lastname  == ""    || 
+            this.state.billing_address1  == ""    || 
+            this.state.billing_city      == ""    || 
+            this.state.billing_country   == ""    || 
+            this.state.billing_state     == ""    || 
+            this.state.billing_postcode  == ""    || 
+            this.state.billing_email     == ""    || 
+            this.state.billing_phone     == ""    ||
+            this.state.shipping_firstname == null || 
+            this.state.shipping_lastname  == null || 
+            this.state.shipping_address1  == null || 
+            this.state.shipping_city      == null || 
+            this.state.shipping_country   == null || 
+            this.state.shipping_state     == null || 
+            this.state.shipping_postcode  == null ||
+            this.state.shipping_firstname == ""   || 
+            this.state.shipping_lastname  == ""   || 
+            this.state.shipping_address1  == ""   || 
+            this.state.shipping_city      == ""   || 
+            this.state.shipping_country   == ""   || 
+            this.state.shipping_state     == ""   || 
+            this.state.shipping_postcode  == "") {
+
+                Alert.alert("Some fields are missing")
+                return false
+        }else {
+            if (!this.validateEmail(this.state.billing_email)) {
+                Alert.alert("Invalid Email Entered")
+              return false
+            }
+            else {
+              return true
+            }
+          }
+    }
+
+
+    updateDetails = () => {
+        console.log('====================================');
+        console.log("User ID",this.props.user.id);
+        console.log('====================================');
+
+        let billing = {
+            first_name:this.state.billing_firstname,
+            last_name:this.state.billing_lastname,
+            address_1:this.state.billing_address1,
+            country:this.state.billing_country,
+            state:this.state.billing_state,
+            city:this.state.billing_city,
+            postcode:this.state.billing_postcode,
+            phone:this.state.billing_phone,
+            email:this.state.billing_email
+        }
+
+        let shipping = {
+            first_name:this.state.shipping_firstname,
+            last_name:this.state.shipping_lastname,
+            address_1:this.state.shipping_address1,
+            country:this.state.shipping_country,
+            state:this.state.shipping_state,
+            city:this.state.shipping_city,
+            postcode:this.state.shipping_postcode,
+        }
+
+        let user = {
+            billing:billing,
+            shipping:shipping
+        }
+        
+        if(this.fieldsValidated()){
+            Api.post("customers/"+this.props.user.id,
+            user,
+            data => {
+                console.log('====================================');
+                console.log(data);
+                console.log('====================================');
+            },error => {
+                console.log('====================================');
+                console.log(error);
+                console.log('====================================');
+            })
+        }       
+    }
+
+    confirmOrder = () => {
+
+    }
     render(){
         return(
-            <View>
-                <Text>checkout page</Text>
-            </View>
+            <ScrollView>
+
+                <Text>Billing</Text>
+
+                <TextInput placeholder="First Name"  
+                    value={this.state.billing_firstname}
+                    onChangeText={(text)=>{this.setState({billing_firstname:text})}}>
+                    </TextInput>
+                <TextInput placeholder="Last Name" 
+                    value={this.state.billing_lastname}
+                    onChangeText={(text)=>{this.setState({billing_lastname:text})}}>
+                    </TextInput>
+                <TextInput placeholder="Address" 
+                    value={this.state.billing_address1}
+                    onChangeText={(text)=>{this.setState({billing_address1:text})}}>
+                    </TextInput>
+                <TextInput placeholder="Country" 
+                    value={this.state.billing_country}
+                    onChangeText={(text)=>{this.setState({billing_country:text})}}>
+                    </TextInput>
+                <TextInput placeholder="State" 
+                    value={this.state.billing_state}
+                    onChangeText={(text)=>{this.setState({billing_state:text})}}>
+                    </TextInput>
+                <TextInput placeholder="City" 
+                    value={this.state.billing_city}
+                    onChangeText={(text)=>{this.setState({billing_city:text})}}>
+                    </TextInput>
+                <TextInput placeholder="Postal Code" 
+                    value={this.state.billing_postcode}
+                    onChangeText={(text)=>{this.setState({billing_postcode:text})}}>
+                    </TextInput>
+                <TextInput placeholder="Phone" 
+                    value={this.state.billing_phone}
+                    onChangeText={(text)=>{this.setState({billing_phone:text})}}>
+                    </TextInput>
+                <TextInput placeholder="Email Address" 
+                    value={this.state.billing_email}
+                    onChangeText={(text)=>{this.setState({billing_email:text})}}>
+                    </TextInput>
+
+
+                <Text>Shipping</Text>
+
+
+                <TextInput placeholder="First Name"  
+                    value={this.state.shipping_firstname}
+                    onChangeText={(text)=>{this.setState({shipping_firstname:text})}}>
+                    </TextInput>
+                <TextInput placeholder="Last Name"  
+                    value={this.state.shipping_lastname}
+                    onChangeText={(text)=>{this.setState({shipping_lastname:text})}}>
+                    </TextInput>
+                <TextInput placeholder="Address"  
+                    value={this.state.shipping_address1}
+                    onChangeText={(text)=>{this.setState({shipping_address1:text})}}>
+                    </TextInput>
+                <TextInput placeholder="Country" 
+                    value={this.state.shipping_country}
+                    onChangeText={(text)=>{this.setState({shipping_country:text})}}>
+                    </TextInput>
+                <TextInput placeholder="State"  
+                    value={this.state.shipping_state}
+                    onChangeText={(text)=>{this.setState({shipping_state:text})}}>
+                    </TextInput>
+                <TextInput placeholder="City"  
+                    value={this.state.shipping_city}
+                    onChangeText={(text)=>{this.setState({shipping_city:text})}}>
+                    </TextInput>
+                <TextInput placeholder="Postal Code"  
+                    value={this.state.shipping_postcode}
+                    onChangeText={(text)=>{this.setState({shipping_postcode:text})}}>
+                    </TextInput>
+
+
+                <Button title="Confirm Order" onPress={this.updateDetails}></Button>
+            </ScrollView>
         )
     }
 }
 
-export default Checkout
+mapStateToProps = (state) => {
+    return {
+        user:state.user,
+        cart:state.cart
+    }
+}
+
+
+
+export default connect(mapStateToProps)(Checkout)

@@ -22,7 +22,9 @@ class Cart extends React.Component{
         console.log('====================================');
         console.log("User Details : ",user);
         console.log('====================================');
-        if (user === {}){
+
+
+        if (user.id){
             NavigationService.navigate("Checkout",{})
         }
         else{
