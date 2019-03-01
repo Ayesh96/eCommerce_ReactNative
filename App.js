@@ -10,6 +10,7 @@ import Checkout from './src/screens/Checkout/Checkout'
 import Details from './src/screens/Details/Details'
 import Login from './src/screens/Login/Login'
 import Signup from './src/screens/Signup/Signup'
+import Profile from './src/screens/Profile/Profile'
 import {PersistGate} from 'redux-persist/integration/react'
 
 const TopLevelNavigator = createStackNavigator({
@@ -19,7 +20,8 @@ const TopLevelNavigator = createStackNavigator({
   Checkout: Checkout,
   Details:Details,
   Login:Login,
-  Signup:Signup
+  Signup:Signup,
+  Profile:Profile
 })
 
 const AppContainer = createAppContainer(TopLevelNavigator)
