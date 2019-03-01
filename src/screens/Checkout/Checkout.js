@@ -25,11 +25,31 @@ class Checkout extends Component {
             shipping_postcode:""
     }
 
+    setUserDetails = (data) => {
+        this.setState({
+            billing_firstname:data.billing.first_name,
+            billing_lastname:data.billing.last_name,
+            billing_address1:data.billing.address_1,
+            billing_city:data.billing.city,
+            billing_country:data.billing.country,
+            billing_state:data.billing.state,
+            billing_postcode:data.billing.postcode,
+            billing_email:data.billing.email,
+            billing_phone:data.billing.phone,
+
+            shipping_firstname:data.shipping.first_name,
+            shipping_lastname:data.shipping.last_name,
+            shipping_address1:data.shipping.address_1,
+            shipping_city:data.shipping.city,
+            shipping_country:data.shipping.country,
+            shipping_state:data.shipping.state,
+            shipping_postcode:data.shipping.postcode
+        })
+    }
     validateEmail(email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
       }
-
 
     fieldsValidated(){
         if (this.state.billing_firstname == null  || 
@@ -78,12 +98,16 @@ class Checkout extends Component {
           }
     }
 
+    componentWillMount = () => {
+        Api.get("customers/"+this.props.user.id,{},
+        data=>{
+            this.setUserDetails(data)
+        },error=>{
+            Alert.alert(error.message)
+        })
+    }
 
     updateDetails = () => {
-        console.log('====================================');
-        console.log("User ID",this.props.user.id);
-        console.log('====================================');
-
         let billing = {
             first_name:this.state.billing_firstname,
             last_name:this.state.billing_lastname,
@@ -115,9 +139,7 @@ class Checkout extends Component {
             Api.post("customers/"+this.props.user.id,
             user,
             data => {
-                console.log('====================================');
-                console.log(data);
-                console.log('====================================');
+                Alert.alert("Details Updated")
             },error => {
                 console.log('====================================');
                 console.log(error);
@@ -127,7 +149,14 @@ class Checkout extends Component {
     }
 
     confirmOrder = () => {
+        this.updateDetails()
 
+        Api.post("orders",order,
+        data=>{
+
+        },error=>{
+            
+        })
     }
     render(){
         return(
@@ -218,7 +247,5 @@ mapStateToProps = (state) => {
         cart:state.cart
     }
 }
-
-
 
 export default connect(mapStateToProps)(Checkout)
