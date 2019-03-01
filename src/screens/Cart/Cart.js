@@ -34,8 +34,9 @@ class Cart extends React.Component{
                     text: 'Login',
                     onPress: () => NavigationService.navigate("Login",{}),
                 },
-                  {text: 'Signup', 
-                  onPress: () => NavigationService.navigate("Login",{})
+                  {
+                    text: 'Signup', 
+                    onPress: () => NavigationService.navigate("Signup",{})
                 }
                 ],
                 {cancelable: false},
