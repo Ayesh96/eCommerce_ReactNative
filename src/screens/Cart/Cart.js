@@ -1,7 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {View, Button, Text, TouchableOpacity, FlatList, Image} from 'react-native'
+import {View, Button, Text, TouchableOpacity, FlatList, Image, Alert} from 'react-native'
 import NavigationService from '../../../NavigationService'
+import Account from '../../components/Account/Account'
 
 class Cart extends React.Component{
     
@@ -15,8 +16,32 @@ class Cart extends React.Component{
         return total
     }
 
-    navigateToCheckout(){
-        NavigationService.navigate("Checkout",{})
+    navigateToCheckout(user){
+
+
+        console.log('====================================');
+        console.log("User Details : ",user);
+        console.log('====================================');
+        if (user === {}){
+            NavigationService.navigate("Checkout",{})
+        }
+        else{
+            Alert.alert(
+                'Login/Signup',
+                'Kindly Login or Signup to continue',
+                [
+                  {
+                    text: 'Login',
+                    onPress: () => NavigationService.navigate("Login",{}),
+                },
+                  {text: 'Signup', 
+                  onPress: () => NavigationService.navigate("Login",{})
+                }
+                ],
+                {cancelable: false},
+              );
+        }
+        
     }   
 
  
@@ -39,7 +64,7 @@ class Cart extends React.Component{
                 }>
                 </FlatList>
                 <Text>Total: {this.calculateTotal()}</Text>
-                <Button title="Checkout" onPress={this.navigateToCheckout}/>
+                <Button title="Checkout" onPress={this.navigateToCheckout.bind(this,this.props.user)}/>
             </View>
         )
     }
@@ -48,13 +73,15 @@ class Cart extends React.Component{
 mapStateToProps = (state) => {
     console.log('mapping ',state)
     return {
-        cart:state.cart
+        cart:state.cart,
+        user:state.user
     }
 }
 
 mapDispatchToProps = (dispatch) => {
     return {
         removeFromCart: (product) => dispatch({type:'ADD_REMOVE_CART',product:product})
+
     }
 }
 

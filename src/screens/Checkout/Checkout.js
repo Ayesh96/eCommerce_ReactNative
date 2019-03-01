@@ -1,12 +1,12 @@
 import React,{Component} from 'react'
-import {View,Text,TouchableOpacity,Button} from 'react-native'
+import {View,Text,TouchableOpacity,Button,TextInput} from 'react-native'
 
 
 class Checkout extends Component {
     render(){
         return(
             <View>
-                <Text>Checkout</Text>
+                <Text>checkout page</Text>
             </View>
         )
     }
