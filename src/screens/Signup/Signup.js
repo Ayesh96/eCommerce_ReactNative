@@ -3,7 +3,7 @@ import {View,Text,TouchableOpacity,Button,TextInput, Alert} from 'react-native'
 import Api from '../../../Api'
 //import alert from '../../sharedUI/componenets_UI'
 import ToastAndroid from 'react-native'
-
+import {connect} from "react-redux"
 
 class Signup extends Component {
     state = {
@@ -49,9 +49,20 @@ class Signup extends Component {
     SignupPress(){
 
         if(this.fieldsValidated()){
-            Api.post("customers",{username:this.state.username,password:this.state.password,email:this.state.email},data=>{
-                if(data.data.status === 400){
+            Api.post("customers",{username:this.state.username,password:this.state.password,email:this.state.email},
+            data=>{
+                console.log('====================================');
+                console.log(data);
+                console.log('====================================');
+
+                if(data.data){
+                  if(data.data.status === 400){
                     Alert.alert(data.message)
+                  }
+                }
+                else{
+                  Alert.alert("Signup Successful")
+                  this.props.register_user(data)
                 }
             },error=>{
                 console.log('====================================');
@@ -75,4 +86,12 @@ class Signup extends Component {
     }
 }
 
-export default Signup
+
+mapDispatchToProps = (disptach) => {
+  return{
+      register_user: (user)=>disptach({type:'ADD_USER',user:user})
+  }
+}
+
+
+export default connect(null,mapDispatchToProps)(Signup)

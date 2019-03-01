@@ -1,6 +1,7 @@
 import React,{Component} from 'react'
 import {View,Text,TouchableOpacity,Button,TextInput, Alert} from 'react-native'
 import Api from '../../../Api'
+import{connect} from 'react-redux'
 
 
 class Login extends Component {
@@ -20,7 +21,7 @@ class Login extends Component {
                 Alert.alert(data.error)
             }
             else{
-                Alert.alert("Logged In")
+                this.props.register_user(data.user)
             }
         },error=>{
             console.log('====================================');
@@ -39,4 +40,12 @@ class Login extends Component {
     }
 }
 
-export default Login
+
+
+mapDispatchToProps = (disptach) => {
+    return{
+        register_user: (user)=>disptach({type:'ADD_USER',user:user})
+    }
+}
+
+export default connect(null,mapDispatchToProps)(Login)
