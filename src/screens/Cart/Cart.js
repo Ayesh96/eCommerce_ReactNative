@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {View, Button, Text, TouchableOpacity, FlatList, Image, Alert} from 'react-native'
 import NavigationService from '../../../NavigationService'
 import Account from '../../components/Account/Account'
+import * as actionCreators from "../../Actions/actions"
 
 class Cart extends React.Component{
     
@@ -83,7 +84,7 @@ mapStateToProps = (state) => {
 
 mapDispatchToProps = (dispatch) => {
     return {
-        removeFromCart: (product) => dispatch({type:'ADD_REMOVE_CART',product:product})
+        removeFromCart: (product) => dispatch(actionCreators.add_remove_cart(product))
 
     }
 }

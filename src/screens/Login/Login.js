@@ -2,6 +2,7 @@ import React,{Component} from 'react'
 import {View,Text,TouchableOpacity,Button,TextInput, Alert} from 'react-native'
 import Api from '../../../Api'
 import{connect} from 'react-redux'
+import * as actionCreators from "../../Actions/actions"
 
 
 class Login extends Component {
@@ -34,7 +35,8 @@ class Login extends Component {
             <View>
                 <TextInput placeholder="Usermame" value={this.state.username} onChangeText={(text) => this.setState({username:text})} textContentType="name"></TextInput>
                 <TextInput placeholder="Password" value={this.state.password} onChangeText={(text) => this.setState({password:text})} secureTextEntry={true}></TextInput>
-                <Button title="Login" onPress={()=>this.LoginPress()}/>
+                {/* <Button title="Login" onPress={()=>this.LoginPress()}/> */}
+                <Button title="Login" onPress={()=>this.props.register_user(this.state.username,this.state.password)}/>
             </View>
         )
     }
@@ -44,7 +46,7 @@ class Login extends Component {
 
 mapDispatchToProps = (disptach) => {
     return{
-        register_user: (user)=>disptach({type:'ADD_USER',user:user})
+        register_user: (username,password)=>disptach(actionCreators.login(username,password))
     }
 }
 

@@ -10,6 +10,7 @@ import {
 import {connect} from 'react-redux'
 import WC from '../../../Api'
 import NavigationService from '../../../NavigationService'
+import * as actionCreators from "../../Actions/actions"
 
 class HomePage extends React.Component {
  
@@ -75,7 +76,7 @@ render() {
             </View>
             }>
         </FlatList>
-
+        <Button title="Clear User" onPress={()=>this.props.clear_user()}></Button>
        
         </View>
     )}
@@ -95,8 +96,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        add_remove_cart: (product) => dispatch({type:'ADD_REMOVE_CART',product:product}),
-        add_remove_wishlist: (product) => dispatch({type:'ADD_REMOVE_WISHLIST',product:product})
+        add_remove_cart: (product) => dispatch(actionCreators.add_remove_cart(product)),
+        add_remove_wishlist: (product) => dispatch(actionCreators.add_remove_wishlist(product)),
+        clear_user: () => dispatch(actionCreators.logout())
     }
 }
 

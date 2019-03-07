@@ -10,6 +10,9 @@ const _user = (state={},action)=>{
             console.log('====================================');
             return newState
 
+        case 'CLEAR_USER':
+            return {}
+            
         default:
             return newState
     }   

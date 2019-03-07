@@ -3,6 +3,7 @@ import {ScrollView,Text,TouchableOpacity,Button,TextInput,Alert} from 'react-nat
 import Api from '../../../Api'
 import {connect} from 'react-redux'
 import NavigationService from '../../../NavigationService'
+import * as actionCreators from "../../Actions/actions";
 
 class Checkout extends Component {
 
@@ -143,41 +144,43 @@ class Checkout extends Component {
 
         return shipping
     }
+
     updateDetails = () => {
         
         let user = {
-            billing:this.setBillingDetails,
-            shipping:this.setShippingDetails
+            billing:this.setBillingDetails(),
+            shipping:this.setShippingDetails()
         }
-        
+        console.log('====================================');
+        console.log("billing: ",user.billing,"\nshipping: ",user.shipping);
+        console.log('====================================');
         if(this.fieldsValidated()){
             Api.post("customers/"+this.props.user.id,
             user,
             data => {
-                Alert.alert("Details Updated")
+                console.log('====================================');
+                console.log("Updated Details: ",data);
+                console.log('====================================');
+                this.confirmOrder()
             },error => {
                 console.log('====================================');
                 console.log(error);
                 console.log('====================================');
+                return false
             })
         }       
     }
 
     confirmOrder = () => {
-        this.updateDetails()
-
         let order = {
             billing:this.setBillingDetails,
             shipping:this.setShippingDetails,
             line_items:[],
-            customer_id:this.props.user.id
-            
+            customer_id:this.props.user.id    
         }
-
         let item = {
             product_id:0,
             quantity:0
-
         }
 
         for(let i=0;i<this.props.cart.length;i++){
@@ -185,17 +188,10 @@ class Checkout extends Component {
             item.quantity = this.props.cart[i].qty
             order.line_items.push(item)
         }
-
-        Api.post("orders",order,
-        data=>{
-            Alert.alert("Order Created Successfuly, Your Order ID is "+data.id)
-            NavigationService.navigate("Profile",{})
-        },error=>{
-            console.log('====================================');
-            console.log("Error : ",error);
-            console.log('====================================');
-        })
+        this.props.add_order(order)
+        //NavigationService.navigate("Homepage",{})
     }
+
     render(){
         return(
             <ScrollView>
@@ -273,7 +269,7 @@ class Checkout extends Component {
                     </TextInput>
 
 
-                <Button title="Confirm Order" onPress={this.confirmOrder}></Button>
+                <Button title="Confirm Order" onPress={this.updateDetails}></Button>
             </ScrollView>
         )
     }
@@ -286,4 +282,10 @@ mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(Checkout)
+mapDispatchToProps = (dispatch)=> {
+    return {
+        add_order: (order) => dispatch(actionCreators.new_order(order))
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Checkout)
